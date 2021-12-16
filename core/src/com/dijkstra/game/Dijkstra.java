@@ -13,7 +13,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class Dijkstra extends ApplicationAdapter {
 	public SpriteBatch batch;
 	public OrthographicCamera camera;
-	private ShapeRenderer shapeRenderer;
+	public ShapeRenderer shapeRenderer;
+	public static Spot start;
+	public static Spot end;
 
 	private Spot[][] grid;
 	private static final int ROWS = 25;
@@ -45,8 +47,23 @@ public class Dijkstra extends ApplicationAdapter {
 			int row = (int) aux.x;
 			int col = (int) aux.y;
 
+			Spot spot = grid[row][col];
+
 			System.out.println("row: " + row + " col: " + col);
-			grid[row][col].setColor(Color.BLUE);
+			if(start == null)
+			{
+				start = spot;
+				grid[row][col].setColor(Color.BLUE);
+			}
+			else if(end == null && !spot.equals(start))
+			{
+				end = spot;
+				grid[row][col].setColor(Color.YELLOW);
+			}
+			else if(!spot.equals(start) && !spot.equals(end))
+				grid[row][col].setColor(Color.BLACK);
+
+
 		}
 	}
 	

@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.Objects;
+
 public class Spot
 {
     private Vector2 pos;
@@ -61,5 +63,16 @@ public class Spot
         this.totalRows = totalRows;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Spot spot = (Spot) o;
+        return getPos().equals(spot.getPos());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPos());
+    }
 }
