@@ -2,6 +2,7 @@ package com.dijkstra.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,6 +17,8 @@ public class Dijkstra extends ApplicationAdapter {
 	public ShapeRenderer shapeRenderer;
 	public static Spot start;
 	public static Spot end;
+	public Vector2 lineStart;
+	public Vector2 lineEnd;
 
 	private Spot[][] grid;
 	private static final int ROWS = 25;
@@ -25,6 +28,8 @@ public class Dijkstra extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
+		lineStart = new Vector2();
+		lineEnd = new Vector2();
 		camera.setToOrtho(false, 600, 600);
 		shapeRenderer = new ShapeRenderer();
 		makeGrid();
@@ -38,7 +43,7 @@ public class Dijkstra extends ApplicationAdapter {
 		drawGrid();
 		batch.end();
 
-		if (Gdx.input.isTouched()) {
+		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 			Vector3 touchPos = new Vector3();
 			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 			camera.unproject(touchPos);
@@ -53,18 +58,43 @@ public class Dijkstra extends ApplicationAdapter {
 			if(start == null)
 			{
 				start = spot;
-				grid[row][col].setColor(Color.BLUE);
+				spot.setColor(Color.BLUE);
 			}
 			else if(end == null && !spot.equals(start))
 			{
 				end = spot;
-				grid[row][col].setColor(Color.YELLOW);
+				spot.setColor(Color.YELLOW);
 			}
 			else if(!spot.equals(start) && !spot.equals(end))
-				grid[row][col].setColor(Color.BLACK);
-
-
+				spot.setColor(Color.BLACK);
 		}
+
+		if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT))
+		{
+			Vector3 touchPos = new Vector3();
+			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+			camera.unproject(touchPos);
+			Vector3 aux = getMousePosition(touchPos);
+
+			int row = (int) aux.x;
+			int col = (int) aux.y;
+
+			Spot spot = grid[row][col];
+
+			if(spot.equals(start))
+			{
+				start = null;
+				spot.setColor(Color.WHITE);
+			}
+			else if(spot.equals(end))
+			{
+				end = null;
+				spot.setColor(Color.WHITE);
+			}
+			else
+				spot.setColor(Color.WHITE);
+		}
+
 	}
 	
 	@Override
@@ -88,10 +118,10 @@ public class Dijkstra extends ApplicationAdapter {
 		int gap = WIDTH / ROWS;
 		for(int i = 0; i < ROWS; i++)
 		{
-			drawLine(shapeRenderer, new Vector2(0, i * gap), new Vector2(WIDTH, i * gap),1 ,Color.GRAY);
+			drawLine(shapeRenderer, lineStart.set(0, i * gap), lineEnd.set(WIDTH, i * gap),1 ,Color.GRAY);
 			for(int j = 0; j < ROWS; j++)
 			{
-				drawLine(shapeRenderer, new Vector2(j * gap, 0), new Vector2(j * gap, WIDTH), 1, Color.GRAY);
+				drawLine(shapeRenderer, lineStart.set(j * gap, 0), lineEnd.set(j * gap, WIDTH), 1, Color.GRAY);
 			}
 		}
 	}
