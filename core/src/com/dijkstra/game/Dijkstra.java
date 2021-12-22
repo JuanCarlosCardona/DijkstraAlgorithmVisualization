@@ -21,8 +21,8 @@ public class Dijkstra extends ApplicationAdapter {
 	public Vector2 lineEnd;
 
 	private Spot[][] grid;
-	private static final int ROWS = 25;
-	private static final int WIDTH = 600;
+	public static final int ROWS = 25;
+	public static final int WIDTH = 600;
 
 	@Override
 	public void create () {
@@ -66,7 +66,11 @@ public class Dijkstra extends ApplicationAdapter {
 				spot.setColor(Color.YELLOW);
 			}
 			else if(!spot.equals(start) && !spot.equals(end))
+			{
 				spot.setColor(Color.BLACK);
+				spot.setBarrier(true);
+			}
+
 		}
 
 		if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT))
@@ -92,7 +96,18 @@ public class Dijkstra extends ApplicationAdapter {
 				spot.setColor(Color.WHITE);
 			}
 			else
+			{
 				spot.setColor(Color.WHITE);
+				spot.setBarrier(false);
+			}
+		}
+
+		if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+		{
+			Node node = new Node();
+			for(Spot[] row: grid)
+				for(Spot spot: row)
+					spot.updateNeighbors(grid, node);
 		}
 
 	}
@@ -163,4 +178,5 @@ public class Dijkstra extends ApplicationAdapter {
 	public void setGrid(Spot[][] grid) {
 		this.grid = grid;
 	}
+
 }

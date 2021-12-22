@@ -6,17 +6,24 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class Spot
 {
+    private final int row;
+    private final int col;
     private Vector2 pos;
     private Color color;
     private int spotWidth;
     private int totalRows;
+    private final LinkedList<Node> neighbors = new LinkedList<>();
+    private boolean isBarrier;
 
     public Spot(int row, int col, int spotWidth, int totalRows)
     {
+        this.row = row;
+        this.col = col;
         this.setSpotWidth(spotWidth);
         this.setPos(new Vector2(row * spotWidth, col * spotWidth));
         this.setTotalRows(totalRows);
@@ -29,6 +36,33 @@ public class Spot
         shapeRenderer.setColor(this.getColor());
         shapeRenderer.rect(this.getPos().x, this.getPos().y, this.getSpotWidth(), this.getSpotWidth());
         shapeRenderer.end();
+    }
+
+    public void updateNeighbors(Spot[][] grid, Node node)
+    {
+        if(this.row < this.totalRows - 1 && !grid[this.row + 1][col].isBarrier) // Down
+        {   node.item = grid[this.row + 1][col];
+            this.neighbors.add(node);
+        }
+
+        if(this.row > 0 && !grid[this.row - 1][this.col].isBarrier) // Up
+        {
+            node.item = grid[this.row - 1][this.col];
+            this.neighbors.add(node);
+        }
+
+
+        if(this.col < this.totalRows - 1 && !grid[this.row][this.col + 1].isBarrier) // Right
+        {
+            node.item = grid[this.row][this.col + 1];
+            this.neighbors.add(node);
+        }
+
+        if(this.col > 0 && !grid[this.row][this.col - 1].isBarrier)
+        {
+            node.item = grid[this.row][this.col - 1];
+            this.neighbors.add(node);
+        }
     }
 
     public Vector2 getPos() {
@@ -63,6 +97,8 @@ public class Spot
         this.totalRows = totalRows;
     }
 
+    public LinkedList<Node> getNeighbors() {return this.neighbors;}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -74,5 +110,9 @@ public class Spot
     @Override
     public int hashCode() {
         return Objects.hash(getPos());
+    }
+
+    public void setBarrier(boolean barrier) {
+        isBarrier = barrier;
     }
 }
