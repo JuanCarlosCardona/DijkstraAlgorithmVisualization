@@ -1,7 +1,5 @@
 package com.dijkstra.game;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -25,11 +23,17 @@ public class Spot
         this.row = row;
         this.col = col;
         this.setSpotWidth(spotWidth);
-        this.setPos(new Vector2(row * spotWidth, col * spotWidth));
+        this.setPos(new Vector2(row * spotWidth, col * spotWidth)); // Set x and y position in the grid
         this.setTotalRows(totalRows);
         this.setColor(Color.WHITE);
     }
 
+    /*
+    * Param: ShapeRenderer
+    * Set the ShapeType to rect type
+    * Draws the rect in the x and y position of the spot
+    * The width is specified in the parameterized constructor
+    * */
     public void drawSpot(ShapeRenderer shapeRenderer)
     {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -38,30 +42,32 @@ public class Spot
         shapeRenderer.end();
     }
 
-    public void updateNeighbors(Spot[][] grid, Node node)
+    /*
+    * Param: Spot[][]
+    * If the neighbor of the current Spot is not a barrier
+    * Adds a new Node object in the adjacency list
+    * */
+    public void updateNeighbors(Spot[][] grid)
     {
         if(this.row < this.totalRows - 1 && !grid[this.row + 1][col].isBarrier) // Down
-        {   node.item = grid[this.row + 1][col];
-            this.neighbors.add(node);
+        {
+            this.neighbors.add(new Node(grid[this.row + 1][col]));
         }
 
         if(this.row > 0 && !grid[this.row - 1][this.col].isBarrier) // Up
         {
-            node.item = grid[this.row - 1][this.col];
-            this.neighbors.add(node);
+            this.neighbors.add(new Node(grid[this.row - 1 ][col]));
         }
 
 
         if(this.col < this.totalRows - 1 && !grid[this.row][this.col + 1].isBarrier) // Right
         {
-            node.item = grid[this.row][this.col + 1];
-            this.neighbors.add(node);
+            this.neighbors.add(new Node(grid[this.row][this.col + 1]));
         }
 
-        if(this.col > 0 && !grid[this.row][this.col - 1].isBarrier)
+        if(this.col > 0 && !grid[this.row][this.col - 1].isBarrier) //Left
         {
-            node.item = grid[this.row][this.col - 1];
-            this.neighbors.add(node);
+            this.neighbors.add(new Node(grid[this.row][this.col - 1]));
         }
     }
 
@@ -89,9 +95,6 @@ public class Spot
         this.spotWidth = spotWidth;
     }
 
-    public int getTotalRows() {
-        return totalRows;
-    }
 
     public void setTotalRows(int totalRows) {
         this.totalRows = totalRows;
@@ -115,4 +118,5 @@ public class Spot
     public void setBarrier(boolean barrier) {
         isBarrier = barrier;
     }
+
 }
