@@ -20,9 +20,9 @@ public class Dijkstra extends ApplicationAdapter {
 	public Vector2 lineStart;
 	public Vector2 lineEnd;
 
-	private Spot[][] grid;
-	public static final int ROWS = 25;
-	public static final int WIDTH = 600;
+	private Spot[][] grid; // Bi-dimensional array of Spot objects where the program is based
+	public static final int ROWS = 50; // Number of rows
+	public static final int WIDTH = 600; // Screen width
 
 	@Override
 	public void create () {
@@ -37,12 +37,13 @@ public class Dijkstra extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(255, 255, 255, 0);
+		ScreenUtils.clear(255, 255, 255, 0); // Color white
 		batch.begin();
 		drawSpots();
 		drawGrid();
 		batch.end();
 
+		// Mouse button left to draw spots
 		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 			Vector3 touchPos = new Vector3();
 			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -73,6 +74,7 @@ public class Dijkstra extends ApplicationAdapter {
 
 		}
 
+		// Mouse button right to erase spots
 		if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT))
 		{
 			Vector3 touchPos = new Vector3();
@@ -102,14 +104,32 @@ public class Dijkstra extends ApplicationAdapter {
 			}
 		}
 
-		if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+		// Start Dijkstra's Algorithm
+		if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && start != null && end != null)
 		{
-			Node node = new Node();
 			for(Spot[] row: grid)
 				for(Spot spot: row)
-					spot.updateNeighbors(grid, node);
+					spot.updateNeighbors(grid);
+
+			Algorithm algorithm = new Algorithm();
+			algorithm.dijkstraAlgorithm(start, end);
 		}
 
+		// Restart the grid
+		if(Gdx.input.isKeyPressed(Input.Keys.R))
+		{
+			start = null;
+			end = null;
+			makeGrid();
+			drawSpots();
+		}
+
+		// Quit the app
+		if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
+		{
+			Gdx.app.exit();
+			System.exit(0);
+		}
 	}
 	
 	@Override
@@ -118,9 +138,15 @@ public class Dijkstra extends ApplicationAdapter {
 		shapeRenderer.dispose();
 	}
 
+	/*
+	* No param
+	* Initialize the grid array with Spot object instances
+	* Where i and j represent the row and col position
+	* The x and y are stored in a Vector2 object.
+	* */
 	private void makeGrid()
 	{
-		int gap = WIDTH / ROWS;
+		int gap = WIDTH / ROWS; // Space between spots
 		Spot[][] aux = new Spot[ROWS][WIDTH];
 		for(int i = 0; i < ROWS; i++)
 			for (int j = 0; j < WIDTH; j++)
@@ -128,9 +154,14 @@ public class Dijkstra extends ApplicationAdapter {
 		setGrid(aux);
 	}
 
+	/*
+	* No param
+	* Draws the grid iterating between two for loops
+	* Calls drawLine function in each iteration.
+	* */
 	private void drawGrid()
 	{
-		int gap = WIDTH / ROWS;
+		int gap = WIDTH / ROWS; //Space between Spots
 		for(int i = 0; i < ROWS; i++)
 		{
 			drawLine(shapeRenderer, lineStart.set(0, i * gap), lineEnd.set(WIDTH, i * gap),1 ,Color.GRAY);
@@ -141,6 +172,11 @@ public class Dijkstra extends ApplicationAdapter {
 		}
 	}
 
+	/*
+	* No param
+	* Draws the spots iterating through the grid
+	* Calls the drawSpot method in each iteration
+	* */
 	private void drawSpots()
 	{
 		for(int i = 0; i < ROWS; i++)
@@ -148,6 +184,11 @@ public class Dijkstra extends ApplicationAdapter {
 				grid[i][j].drawSpot(shapeRenderer);
 	}
 
+	/*
+	* Param: ShapeRenderer, gdx.Vector2, gdx.Vector2, int lineWitdh, gdx.Color
+	* Uses gdx.ShapeRenderer (Setting the ShapeType.Line) to draw the lines from Vector2 start to Vector2 end
+	* Width and the color are specified in the parameters
+	* */
 	private static void drawLine(ShapeRenderer shapeRenderer,Vector2 start, Vector2 end, int lineWidth, Color color)
 	{
 		Gdx.gl.glLineWidth(lineWidth);
@@ -161,6 +202,13 @@ public class Dijkstra extends ApplicationAdapter {
 	}
 
 
+	/*
+	* Param: Vector3
+	* Returns: Vector3
+	* This method gets the gdx.Vector3 where the mouse got clicked
+	* Cast's the position x and y from the vector to int and divides them between the space between Spots
+	* In order to get the position in the form of row and col.
+	* */
 	public Vector3 getMousePosition(Vector3 pos)
 	{
 		int gap = WIDTH / ROWS;
