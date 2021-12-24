@@ -9,7 +9,11 @@ The project has the purpose of helping to comprehend the functionality of [Dijks
 Any contributions to the project are allowed and another purpose usage too. So feel free to do whatever you want with it ;).
 
 ## Examples
+<img src = "https://github.com/JuanCarlosCardona/DijkstraAlgorithmVisualization/blob/main/dijkstra-images/drawing-example.gif" height = "400">
 
+<img src = "https://github.com/JuanCarlosCardona/DijkstraAlgorithmVisualization/blob/main/dijkstra-images/multiple-barries.gif" height = "400">
+
+<img src = "https://github.com/JuanCarlosCardona/DijkstraAlgorithmVisualization/blob/main/dijkstra-images/sus-barries.gif" height = "400">
 
 ## Controls
 
