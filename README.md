@@ -30,6 +30,6 @@ Any contributions to the project are allowed and another purpose usage too. So f
 ````````
 $ git clone https://github.com/JuanCarlosCardona/DijkstraAlgorithmVisualization.git
 $ cd DijkstraAlgorithmVisualization
-$ gradlew build
-$ gradlew run
+$ ./gradlew build
+$ ./gradlew run
 ````````
